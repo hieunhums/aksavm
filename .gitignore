@@ -1,0 +1,60 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Sensitive variable files
+*.tfvars
+*.tfvars.json
+!example.tfvars
+
+# Terraform plans
+*.tfplan
+**/plans/
+
+# Azure
+.azure/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.*
+
+# PostgreSQL
+*.sql
+*.dump
+*.pgdump
+!schema.sql
+!migrations/*.sql
+
+# AVM (Azure Verified Modules)
+.avm/
+avm-cache/
+**/avm_outputs.json
+
+# Subscription Vending
+**/subscription-vending-outputs/
+**/vending-manifest.json
+**/subscription-*.json
+!**/subscription-template.json

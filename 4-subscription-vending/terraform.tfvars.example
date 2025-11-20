@@ -1,0 +1,93 @@
+# =====================================================
+# Subscription Vending Example Configuration
+# =====================================================
+
+# Billing scope for EA or MCA
+subscription_billing_scope = "/providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456"
+
+# Subscription details
+subscription_display_name = "sub-project-dev"
+subscription_alias_name   = "sub-project-dev"
+subscription_workload     = "DevTest"
+
+# Management Group
+subscription_management_group_association_enabled = true
+subscription_management_group_id                  = "mg-landing-zones"
+
+# Virtual Networks
+virtual_network_enabled = true
+virtual_networks = {
+  primary = {
+    name                    = "vnet-project-dev"
+    address_space           = ["10.100.0.0/16"]
+    location                = "australiaeast"
+    resource_group_name     = "rg-network-dev"
+    hub_peering_enabled     = true
+    hub_network_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-hub/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+  }
+}
+
+# Resource Groups
+resource_group_creation_enabled = true
+resource_groups = {
+  network = {
+    name     = "rg-network-dev"
+    location = "australiaeast"
+    tags = {
+      Purpose = "Networking"
+    }
+  }
+  compute = {
+    name     = "rg-compute-dev"
+    location = "australiaeast"
+    tags = {
+      Purpose = "Compute"
+    }
+  }
+}
+
+# Role Assignments
+role_assignment_enabled = true
+role_assignments = {
+  owner = {
+    principal_id = "00000000-0000-0000-0000-000000000000"
+    definition   = "Owner"
+  }
+  contributor = {
+    principal_id = "11111111-1111-1111-1111-111111111111"
+    definition   = "Contributor"
+  }
+}
+
+# Budget
+budget_enabled = true
+budgets = {
+  monthly = {
+    amount     = 1000
+    time_grain = "Monthly"
+    time_period = {
+      start_date = "2024-01-01"
+    }
+    notifications = {
+      actual_80 = {
+        enabled        = true
+        threshold      = 80
+        operator       = "GreaterThan"
+        contact_emails = ["team@example.com"]
+      }
+      forecast_100 = {
+        enabled        = true
+        threshold      = 100
+        operator       = "GreaterThan"
+        contact_emails = ["team@example.com"]
+      }
+    }
+  }
+}
+
+# Tags
+subscription_tags = {
+  Environment = "Development"
+  Project     = "MyProject"
+  ManagedBy   = "Terraform"
+}
