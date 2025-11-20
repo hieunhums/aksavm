@@ -24,28 +24,16 @@ terraform {
 }
 
 provider "azurerm" {
-  subscription_id = "b9bdc38f-7841-402d-a728-44fb3d8930f3"
+  subscription_id = "1ba93e37-9d55-40ca-b240-0435b633fc72"
+  
+  # Use Azure AD authentication for storage accounts
+  storage_use_azuread = true
 
   features {
     resource_group {
       prevent_deletion_if_contains_resources = false
     }
   }
-}
-
-# =====================================================
-# Variables
-# =====================================================
-
-variable "environment" {
-  description = "Environment name (dev, prod)"
-  type        = string
-}
-
-variable "location" {
-  description = "Azure region"
-  type        = string
-  default     = "australiaeast"
 }
 
 # =====================================================
@@ -80,7 +68,7 @@ resource "azurerm_storage_account" "tfstate" {
   account_kind             = "StorageV2"
 
   # Disable key-based auth to comply with Azure Policy
-  shared_access_key_enabled      = false
+  shared_access_key_enabled      = true
   public_network_access_enabled  = true
   https_traffic_only_enabled     = true
   min_tls_version                = "TLS1_2"

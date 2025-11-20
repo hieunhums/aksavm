@@ -26,10 +26,10 @@ One module call provides enterprise features that would normally require hundred
 
 ```bash
 # Initialize
-terraform init -backend-config=environments/dev/backend.tfvars
+terraform init -backend-config="../environments/dev/aks.tfvars"
 
 # Deploy
-terraform apply -var-file=environments/dev/terraform.tfvars
+terraform apply -var-file="../environments/dev/aks.tfvars"
 ```
 
 ### Deploy Production

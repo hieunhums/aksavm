@@ -89,6 +89,7 @@ variable "node_pools" {
   description = "Additional user node pools"
   type = map(object({
     name      = string
+    orchestrator_version = string
     vm_size   = string
     min_count = number
     max_count = number

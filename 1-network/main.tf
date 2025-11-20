@@ -12,7 +12,7 @@
 # =====================================================
 
 provider "azurerm" {
-  subscription_id = "b9bdc38f-7841-402d-a728-44fb3d8930f3"
+  subscription_id = "1ba93e37-9d55-40ca-b240-0435b633fc72"
 
   features {
     resource_group {

@@ -54,13 +54,13 @@ Creates core networking components required for AKS deployment using the **AVM V
 cd 1-network
 
 # Initialize with remote backend
-terraform init -backend-config=environments/dev/backend.tfvars
+terraform init -backend-config="../environments/dev/backend.tfvars"
 
 # Plan
-terraform plan -var-file=environments/dev/terraform.tfvars
+terraform plan -var-file="../environments/dev/network.tfvars"
 
 # Apply
-terraform apply -var-file=environments/dev/terraform.tfvars
+terraform apply -var-file="../environments/dev/network.tfvars"
 ```
 
 ### Production Environment

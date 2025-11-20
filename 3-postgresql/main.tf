@@ -9,13 +9,16 @@ data "terraform_remote_state" "network" {
     resource_group_name  = "rg-terraform-state"
     storage_account_name = var.backend_storage_account_name
     container_name       = "tfstate"
-    key                  = "network/${var.environment}/terraform.tfstate"
+    key                  = "network.tfstate"
     use_azuread_auth     = true
   }
 }
 
 provider "azurerm" {
-  subscription_id = "b9bdc38f-7841-402d-a728-44fb3d8930f3"
+  subscription_id = "1ba93e37-9d55-40ca-b240-0435b633fc72"
+  
+  # Use Azure AD authentication for storage accounts
+  storage_use_azuread = true
 
   features {
     resource_group {

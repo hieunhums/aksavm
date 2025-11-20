@@ -2,6 +2,29 @@
 # Production AKS with Azure Verified Modules (AVM)
 # =====================================================
 
+provider "azurerm" {
+  subscription_id = "1ba93e37-9d55-40ca-b240-0435b633fc72"
+  
+  # Use Azure AD authentication for storage accounts
+  storage_use_azuread = true
+
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
+}
+
+# =====================================================
+# Resource Group
+# =====================================================
+
+resource "azurerm_resource_group" "aks" {
+  name     = var.resource_group_name
+  location = var.location
+  tags     = var.tags
+}
+
 # Network configuration from foundation
 data "terraform_remote_state" "network" {
   backend = "azurerm"
@@ -9,7 +32,8 @@ data "terraform_remote_state" "network" {
     resource_group_name  = "rg-terraform-state"
     storage_account_name = var.backend_storage_account_name
     container_name       = "tfstate"
-    key                  = "network/${var.environment}/terraform.tfstate"
+    key                  = "network.tfstate"
+    use_azuread_auth     = true
   }
 }
 
@@ -20,8 +44,8 @@ module "aks_cluster" {
 
   # Core configuration
   name                = var.name
-  location            = var.location
-  resource_group_name = var.resource_group_name
+  location            = azurerm_resource_group.aks.location
+  resource_group_name = azurerm_resource_group.aks.name
   kubernetes_version  = var.kubernetes_version
 
   # Network with CNI Overlay
@@ -43,10 +67,9 @@ module "aks_cluster" {
   rbac_aad_tenant_id          = data.azurerm_client_config.current.tenant_id
   rbac_aad_azure_rbac_enabled = true
 
-  # Managed identity from foundation
+  # Let the module create and manage its own identity
   managed_identities = {
-    system_assigned            = false
-    user_assigned_resource_ids = [data.terraform_remote_state.network.outputs.network_config.identity_id]
+    system_assigned = false
   }
 
   # Optional: Container Registry
