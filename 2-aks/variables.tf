@@ -114,6 +114,19 @@ variable "acr_name" {
 }
 
 # =====================================================
+# Kubernetes Namespaces
+# =====================================================
+
+variable "namespaces" {
+  description = "Kubernetes namespaces to create (applied post-deployment)"
+  type = list(object({
+    name   = string
+    labels = map(string)
+  }))
+  default = []
+}
+
+# =====================================================
 # Tags
 # =====================================================
 

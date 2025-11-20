@@ -82,3 +82,41 @@ module "aks_cluster" {
   tags             = var.tags
   enable_telemetry = var.enable_telemetry
 }
+
+# =====================================================
+# Kubernetes Provider Configuration
+# =====================================================
+
+data "azurerm_kubernetes_cluster" "credentials" {
+  name                = "aks-${var.name}"
+  resource_group_name = azurerm_resource_group.aks.name
+
+  depends_on = [module.aks_cluster]
+}
+
+provider "kubernetes" {
+  host                   = data.azurerm_kubernetes_cluster.credentials.kube_config[0].host
+  client_certificate     = base64decode(data.azurerm_kubernetes_cluster.credentials.kube_config[0].client_certificate)
+  client_key             = base64decode(data.azurerm_kubernetes_cluster.credentials.kube_config[0].client_key)
+  cluster_ca_certificate = base64decode(data.azurerm_kubernetes_cluster.credentials.kube_config[0].cluster_ca_certificate)
+}
+
+# =====================================================
+# Kubernetes Namespaces
+# =====================================================
+
+resource "kubernetes_namespace" "namespaces" {
+  for_each = { for ns in var.namespaces : ns.name => ns }
+
+  metadata {
+    name   = each.value.name
+    labels = merge(
+      each.value.labels,
+      {
+        "managed-by" = "terraform"
+      }
+    )
+  }
+
+  depends_on = [module.aks_cluster]
+}

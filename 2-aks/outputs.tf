@@ -65,3 +65,12 @@ output "oidc_issuer_url" {
   description = "OIDC issuer URL for workload identity"
   value       = module.aks_cluster.oidc_issuer_url
 }
+
+# =====================================================
+# Namespaces
+# =====================================================
+
+output "namespaces" {
+  description = "Created Kubernetes namespaces"
+  value       = [for ns in kubernetes_namespace.namespaces : ns.metadata[0].name]
+}
