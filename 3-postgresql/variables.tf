@@ -152,6 +152,7 @@ variable "geo_redundant_backup_enabled" {
 variable "databases" {
   description = "Map of databases to create"
   type = map(object({
+    name      = string
     charset   = optional(string, "UTF8")
     collation = optional(string, "en_US.utf8")
   }))

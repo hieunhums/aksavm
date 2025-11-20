@@ -11,4 +11,8 @@ terraform {
       version = ">= 3.5.0, < 4.0.0"
     }
   }
+
+  backend "azurerm" {
+    # Configuration provided via -backend-config flag
+  }
 }
