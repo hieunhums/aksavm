@@ -85,10 +85,10 @@ module "postgresql" {
   location            = azurerm_resource_group.postgresql.location
 
   # Server Configuration
-  sku_name   = var.sku_name
-  storage_mb = var.storage_mb
-  version    = var.postgresql_version
-  zone       = var.zone
+  sku_name       = var.sku_name
+  storage_mb     = var.storage_mb
+  server_version = var.postgresql_version
+  zone           = var.zone
 
   # Authentication
   administrator_login    = var.administrator_login

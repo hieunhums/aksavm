@@ -5,16 +5,22 @@ Production-grade Azure Kubernetes Service deployment using **Azure Verified Modu
 ## Architecture
 
 ```
-Simplified Two-Module Structure
+Modular Azure Platform Structure
 │
-├─ 0-bootstrap/         # One-time: Terraform state storage (minimal)
+├─ 0-bootstrap/              # One-time: Terraform state storage (minimal)
 │   └─ Creates: Storage Account with AVM
 │
-├─ 1-network/           # Network team: Network infrastructure
+├─ 1-network/                # Network team: Network infrastructure
 │   └─ Creates: VNet, Subnets, DNS Zones, Identities (AVM)
 │
-└─ 2-aks/               # Platform team: Kubernetes cluster
-    └─ Creates: AKS Cluster, ACR, Monitoring (AVM)
+├─ 2-aks/                    # Platform team: Kubernetes cluster
+│   └─ Creates: AKS Cluster, ACR, Monitoring (AVM)
+│
+├─ 3-postgresql/             # Data team: PostgreSQL database
+│   └─ Creates: PostgreSQL Flexible Server (AVM)
+│
+└─ 4-subscription-vending/   # Platform team: Landing zone provisioning
+    └─ Creates: Subscriptions, VNets, RBAC, Budgets (AVM)
 ```
 
 ## Team Responsibilities
@@ -24,6 +30,8 @@ Simplified Two-Module Structure
 | **0-bootstrap** | DevOps | Terraform state storage (one-time) |
 | **1-network** | Network | VNet, Subnets, DNS, Identities |
 | **2-aks** | Platform | AKS Cluster, ACR, Monitoring |
+| **3-postgresql** | Data | PostgreSQL Flexible Server, Databases |
+| **4-subscription-vending** | Platform | Subscriptions, Landing Zones, RBAC |
 
 ## Deployment Order
 
@@ -46,6 +54,20 @@ terraform apply -var-file=environments/dev/terraform.tfvars
 cd 2-aks
 terraform init -backend-config=environments/dev/backend.tfvars
 terraform apply -var-file=environments/dev/terraform.tfvars
+```
+
+### Step 4: PostgreSQL (Data Team)
+```bash
+cd 3-postgresql
+terraform init -backend-config=environments/dev/backend.tfvars
+terraform apply -var-file=environments/dev/terraform.tfvars
+```
+
+### Optional: Subscription Vending (Platform Team)
+```bash
+cd 4-subscription-vending
+terraform init
+terraform apply -var-file=terraform.tfvars
 ```
 
 ## Why Azure Verified Modules (AVM)?
@@ -85,6 +107,24 @@ All modules in this repository use **Azure Verified Modules** - Microsoft's offi
 - Log Analytics and Azure Monitor
 - Azure Policy and Workload Identity (OIDC)
 
+### 3-postgresql
+- **AVM PostgreSQL Flexible Server Module**
+- Private endpoint integration with VNet
+- Entra ID (Azure AD) authentication support
+- High availability (zone-redundant option)
+- Configurable databases and collations
+- Automated backups with geo-redundancy option
+- Auto-generated secure admin password
+
+### 4-subscription-vending
+- **AVM Landing Zone Vending Pattern Module**
+- Automated subscription creation (EA/MCA)
+- Management group association
+- Virtual network with hub peering
+- Role assignments and RBAC
+- Resource group provisioning
+- Budget and cost management
+
 ## Multi-Region Support
 
 ```
@@ -119,8 +159,10 @@ Storage Account: sttfstate{env}
 
 See detailed guides in each module:
 - [0-bootstrap/README.md](0-bootstrap/README.md)
-- [1-foundation/README.md](1-foundation/README.md)
+- [1-network/README.md](1-network/README.md)
 - [2-aks/README.md](2-aks/README.md)
+- [3-postgresql/README.md](3-postgresql/README.md)
+- [4-subscription-vending/README.md](4-subscription-vending/README.md)
 
 ## Documentation
 
